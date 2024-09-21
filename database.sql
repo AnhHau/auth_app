@@ -12,7 +12,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `tokens` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `userId` int NOT NULL,
+  `userId` int unsigned NOT NULL,
   `refreshToken` varchar(250) COLLATE utf8mb4_general_ci NOT NULL,
   `expiresIn` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
