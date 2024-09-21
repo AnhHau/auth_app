@@ -46,15 +46,16 @@ class TokenRepository
         $data = [];
         $refreshToken = false;
         if ($user['id']) {
+            $this->token->refreshToken = bin2hex(random_bytes(32));
             $payload = [
                 'sub' => $user['id'],
                 'exp' => time() + 3600,
+                'refreshToken' => $this->token->refreshToken,
                 'email' => $user['email']
             ];
             // Generate JWT token
             $token = JWT::encode($payload, $this->secretKey, $this->hash_algo);
             $user_token = $this->getTokenByUserId($user['id']);
-            $this->token->refreshToken = bin2hex(random_bytes(32));
             $this->token->userId = $user['id'];
             if (empty($user_token['id'])) {
                 $refreshToken = $this->token->addToken();
@@ -120,8 +121,9 @@ class TokenRepository
             $decoded = JWT::decode($jwt, new Key($this->secretKey, $this->hash_algo));
             $decoded = (array) $decoded;
             $timestamp = time();
+            $this->token->refreshToken = $decoded['refreshToken'];
             $this->token->userId = $decoded['sub'];
-            $token = $this->token->getTokenByUserId($decoded['sub']);
+            $token = $this->token->getTokenByUserRefreshToken($decoded['refreshToken']);
             if ($timestamp < $decoded['exp'] && !empty($token)) {
                 $this->token_decode = $decoded;
                 $this->is_expiry = false;
