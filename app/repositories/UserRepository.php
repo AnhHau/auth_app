@@ -18,7 +18,7 @@ class UserRepository
 
     public function createUser($data)
     {
-        $data = [];
+        $result = [];
         if (!$this->user->emailExists($data['email'])) {
             $this->user->firstName = $data['firstName'];
             $this->user->lastName = $data['lastName'];
@@ -26,7 +26,7 @@ class UserRepository
             $this->user->hash = $data['password'];
             $this->user->id = $this->user->create();
             if ($this->user->id) {
-                $data = [
+                $result = [
                     "id" => $this->user->id,
                     "firstName" => $this->user->firstName,
                     "lastName" => $this->user->lastName,
@@ -35,7 +35,7 @@ class UserRepository
                 ];
             }
         }
-        return $data;
+        return $result;
     }
 
     public function getUserByEmail($email)
